@@ -1,20 +1,16 @@
 from TTS.tts.utils.text.phonemizers.base import BasePhonemizer
 from TTS.tts.utils.text.phonemizers.espeak_wrapper import ESpeak
-from TTS.tts.utils.text.phonemizers.gruut_wrapper import Gruut
 from TTS.tts.utils.text.phonemizers.ja_jp_phonemizer import JA_JP_Phonemizer
 from TTS.tts.utils.text.phonemizers.zh_cn_phonemizer import ZH_CN_Phonemizer
 
-PHONEMIZERS = {b.name(): b for b in (ESpeak, Gruut, JA_JP_Phonemizer)}
+PHONEMIZERS = {b.name(): b for b in (ESpeak, JA_JP_Phonemizer)}
 
 
 ESPEAK_LANGS = list(ESpeak.supported_languages().keys())
-GRUUT_LANGS = list(Gruut.supported_languages())
 
 
 # Dict setting default phonemizers for each language
-# Add Gruut languages
-_ = [Gruut.name()] * len(GRUUT_LANGS)
-DEF_LANG_TO_PHONEMIZER = dict(list(zip(GRUUT_LANGS, _)))
+DEF_LANG_TO_PHONEMIZER = dict()
 
 
 # Add ESpeak languages and override any existing ones
@@ -40,8 +36,6 @@ def get_phonemizer_by_name(name: str, **kwargs) -> BasePhonemizer:
     """
     if name == "espeak":
         return ESpeak(**kwargs)
-    if name == "gruut":
-        return Gruut(**kwargs)
     if name == "zh_cn_phonemizer":
         return ZH_CN_Phonemizer(**kwargs)
     if name == "ja_jp_phonemizer":
