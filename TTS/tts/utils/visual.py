@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
-matplotlib.use("Agg")
+#matplotlib.use("Agg")
 
 
 def plot_alignment(alignment, info=None, fig_size=(16, 10), title=None, output_fig=False):
