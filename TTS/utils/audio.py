@@ -5,6 +5,7 @@ import numpy as np
 import pyworld as pw
 import scipy.io.wavfile
 import scipy.signal
+import pydub
 import soundfile as sf
 import torch
 from torch import nn
@@ -860,7 +861,15 @@ class AudioProcessor(object):
             sr (int, optional): Sampling rate used for saving to the file. Defaults to None.
         """
         wav_norm = wav * (32767 / max(0.01, np.max(np.abs(wav))))
-        scipy.io.wavfile.write(path, sr if sr else self.sample_rate, wav_norm.astype(np.int16))
+        wav_norm_int16 = wav_norm.astype(np.int16)
+        audio_segment = pydub.AudioSegment(
+            wav_norm_int16.tobytes(), 
+            frame_rate=sr if sr else self.sample_rate,
+            sample_width=wav_norm_int16.dtype.itemsize, 
+            channels=1
+        )
+        audio_segment.export(path, format="wav")
+
 
     def get_duration(self, filename: str) -> float:
         """Get the duration of a wav file using Librosa.

@@ -2,6 +2,7 @@
 numpy==1.19.5
 cython
 scipy>=1.4.0
+pydub
 torch>=1.7
 torchaudio
 soundfile
