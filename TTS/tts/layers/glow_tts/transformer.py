@@ -420,9 +420,9 @@ class RelativePositionTransformer(nn.Module):
             - x_mask: :math:`[B, 1, T]`
         """
         attn_mask = x_mask.unsqueeze(2) * x_mask.unsqueeze(-1)
-        for i in range(self.num_layers):
+        for i, attn_layer_i in enumerate(self.attn_layers):
             x = x * x_mask
-            y = self.attn_layers[i](x, x, attn_mask)
+            y = attn_layer_i(x, x, attn_mask)
             y = self.dropout(y)
             x = self.norm_layers_1[i](x + y)
 
