@@ -248,16 +248,28 @@ class HifiganGenerator(torch.nn.Module):
         o = self.conv_pre(x)
         if hasattr(self, "cond_layer"):
             o = o + self.cond_layer(g)
-        for i, ups_i in enumerate(self.ups):
-            o = F.leaky_relu(o, 0.1) # LRELU_SLOPE
-            o = ups_i(o)
-            z_sum = None
-            for j in range(self.num_kernels):
-                if z_sum is None:
-                    z_sum = self.resblocks[i * self.num_kernels + j](o)
-                else:
-                    z_sum += self.resblocks[i * self.num_kernels + j](o)
-            o = z_sum / self.num_kernels
+        # UP 1
+        o = F.leaky_relu(o, 0.1) # LRELU_SLOPE
+        o = self.ups[0](o)
+        z_sum = self.resblocks[0](o)
+        z_sum += self.resblocks[1](o)
+        z_sum += self.resblocks[2](o)
+        o = z_sum / self.num_kernels
+        # UP 2
+        o = F.leaky_relu(o, 0.1) # LRELU_SLOPE
+        o = self.ups[1](o)
+        z_sum = self.resblocks[3](o)
+        z_sum += self.resblocks[4](o)
+        z_sum += self.resblocks[5](o)
+        o = z_sum / self.num_kernels
+        # UP 2
+        o = F.leaky_relu(o, 0.1) # LRELU_SLOPE
+        o = self.ups[2](o)
+        z_sum = self.resblocks[6](o)
+        z_sum += self.resblocks[7](o)
+        z_sum += self.resblocks[8](o)
+        o = z_sum / self.num_kernels
+        # other
         o = F.leaky_relu(o)
         o = self.conv_post(o)
         o = torch.tanh(o)
