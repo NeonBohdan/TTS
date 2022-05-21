@@ -286,8 +286,14 @@ class HifiganGenerator(torch.nn.Module):
             remove_weight_norm(l)
         for l in self.resblocks:
             l.remove_weight_norm()
-        remove_weight_norm(self.conv_pre)
-        remove_weight_norm(self.conv_post)
+        try:
+            remove_weight_norm(self.conv_pre)
+        except ValueError:
+            pass
+        try:
+            remove_weight_norm(self.conv_post)
+        except ValueError:
+            pass
 
     def load_checkpoint(
         self, config, checkpoint_path, eval=False
