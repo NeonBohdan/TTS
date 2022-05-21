@@ -148,7 +148,7 @@ class ResBlock2(torch.nn.Module):
 
     def forward(self, x):
         for c in self.convs:
-            xt = F.leaky_relu(x, LRELU_SLOPE)
+            xt = F.leaky_relu(x, 0.1) # LRELU_SLOPE
             xt = c(xt)
             x = xt + x
         return x
@@ -249,7 +249,7 @@ class HifiganGenerator(torch.nn.Module):
         if hasattr(self, "cond_layer"):
             o = o + self.cond_layer(g)
         for i in range(self.num_upsamples):
-            o = F.leaky_relu(o, LRELU_SLOPE)
+            o = F.leaky_relu(o, 0.1) # LRELU_SLOPE
             o = self.ups[i](o)
             z_sum = None
             for j in range(self.num_kernels):
