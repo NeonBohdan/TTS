@@ -248,9 +248,9 @@ class HifiganGenerator(torch.nn.Module):
         o = self.conv_pre(x)
         if hasattr(self, "cond_layer"):
             o = o + self.cond_layer(g)
-        for i in range(self.num_upsamples):
+        for i, ups_i in enumerate(self.ups):
             o = F.leaky_relu(o, 0.1) # LRELU_SLOPE
-            o = self.ups[i](o)
+            o = ups_i(o)
             z_sum = None
             for j in range(self.num_kernels):
                 if z_sum is None:
