@@ -420,18 +420,19 @@ class RelativePositionTransformer(nn.Module):
             - x_mask: :math:`[B, 1, T]`
         """
         attn_mask = x_mask.unsqueeze(2) * x_mask.unsqueeze(-1)
-        for i, attn_layer_i in enumerate(self.attn_layers):
+        for ((i, attn_layer_i), (_, norm_layer_1_i), (_, ffn_layer_i), (_, norm_layer_2_i)) in zip(enumerate(self.attn_layers),enumerate(self.norm_layers_1),
+                                   enumerate(self.ffn_layers),enumerate(self.norm_layers_2)):
             x = x * x_mask
             y = attn_layer_i(x, x, attn_mask)
             y = self.dropout(y)
-            x = self.norm_layers_1[i](x + y)
+            x = norm_layer_1_i(x + y)
 
-            y = self.ffn_layers[i](x, x_mask)
+            y = ffn_layer_i(x, x_mask)
             y = self.dropout(y)
 
             if (i + 1) == self.num_layers and hasattr(self, "proj"):
                 x = self.proj(x)
 
-            x = self.norm_layers_2[i](x + y)
+            x = norm_layer_2_i(x + y)
         x = x * x_mask
         return x
