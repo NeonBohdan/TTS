@@ -39,7 +39,7 @@ class StandardScaler:
 
 
 # from https://gist.github.com/jihunchoi/f1434a77df9db1bb337417854b398df1
-def sequence_mask(sequence_length, max_len=None):
+def sequence_mask(sequence_length, max_len: int = 0):
     """Create a sequence mask for filtering padding in a sequence tensor.
 
     Args:
@@ -49,7 +49,7 @@ def sequence_mask(sequence_length, max_len=None):
     Shapes:
         - mask: :math:`[B, T_max]`
     """
-    if max_len is None:
+    if max_len == 0:
         max_len = sequence_length.data.max()
     seq_range = torch.arange(max_len, dtype=sequence_length.dtype, device=sequence_length.device)
     # B x T_max
