@@ -291,10 +291,12 @@ class FeedForwardNetwork(nn.Module):
         self.dropout = nn.Dropout(dropout_p)
 
     def forward(self, x, x_mask):
-        x = self.conv_1(self._same_padding(x * x_mask))
+        same_padding = F.pad(x * x_mask, [1, 1, 0, 0, 0, 0])
+        x = self.conv_1(same_padding)
         x = torch.relu(x)
         x = self.dropout(x)
-        x = self.conv_2(self._same_padding(x * x_mask))
+        same_padding = F.pad(x * x_mask, [1, 1, 0, 0, 0, 0])
+        x = self.conv_2(same_padding)
         return x * x_mask
 
     def _causal_padding(self, x):
