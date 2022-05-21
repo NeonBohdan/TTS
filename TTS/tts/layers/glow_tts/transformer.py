@@ -195,7 +195,7 @@ class RelativePositionMultiHeadAttention(nn.Module):
         logits = torch.matmul(query, re.unsqueeze(0).transpose(-2, -1))
         return logits
 
-    def _get_relative_embeddings(self, relative_embeddings, length):
+    def _get_relative_embeddings(self, relative_embeddings, length: int):
         """Convert embedding vestors to a tensor of embeddings"""
         # Pad first before slice to avoid using cond ops.
         pad_length = max(length - (self.rel_attn_window_size + 1), 0)
@@ -236,14 +236,14 @@ class RelativePositionMultiHeadAttention(nn.Module):
         batch, heads, length, _ = x.size()
         # padd along column
         x = F.pad(x, [0, length - 1, 0, 0, 0, 0, 0, 0])
-        x_flat = x.view([batch, heads, length**2 + length * (length - 1)])
+        x_flat = x.view([batch, heads, int(length**2 + length * (length - 1))])
         # add 0's in the beginning that will skew the elements after reshape
         x_flat = F.pad(x_flat, [length, 0, 0, 0, 0, 0])
         x_final = x_flat.view([batch, heads, length, 2 * length])[:, :, :, 1:]
         return x_final
 
     @staticmethod
-    def _attn_proximity_bias(length):
+    def _attn_proximity_bias(length: int):
         """Produce an attention mask that discourages distant
         attention values.
         Args:
