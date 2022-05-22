@@ -91,8 +91,8 @@ class WN(torch.nn.Module):
         x_mask = 1.0 if x_mask is None else x_mask
         if g is not None:
             g = self.cond_layer(g)
-        for i in range(self.num_layers):
-            x_in = self.in_layers[i](x)
+        for ((i, in_layer_i), (_, res_skip_layer_i)) in zip(enumerate(self.in_layers),enumerate(self.res_skip_layers)):
+            x_in = in_layer_i(x)
             x_in = self.dropout(x_in)
             if g is not None:
                 cond_offset = i * 2 * self.hidden_channels
@@ -100,7 +100,7 @@ class WN(torch.nn.Module):
             else:
                 g_l = torch.zeros_like(x_in)
             acts = fused_add_tanh_sigmoid_multiply(x_in, g_l, n_channels_tensor)
-            res_skip_acts = self.res_skip_layers[i](acts)
+            res_skip_acts = res_skip_layer_i(acts)
             if i < self.num_layers - 1:
                 x = (x + res_skip_acts[:, : self.hidden_channels, :]) * x_mask
                 output = output + res_skip_acts[:, self.hidden_channels :, :]
