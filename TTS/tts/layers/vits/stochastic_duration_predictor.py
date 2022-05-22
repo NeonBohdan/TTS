@@ -51,12 +51,13 @@ class DilatedDepthSeparableConv(nn.Module):
         """
         if g is not None:
             x = x + g
-        for i in range(self.num_layers):
-            y = self.convs_sep[i](x * x_mask)
-            y = self.norms_1[i](y)
+        for ((i, conv_sep_i), (_, norm_1_i), (_, conv_1x1_i), (_, norm_2_i)) in zip(enumerate(self.convs_sep),enumerate(self.norms_1),
+                                   enumerate(self.convs_1x1),enumerate(self.norms_2)):
+            y = conv_sep_i(x * x_mask)
+            y = norm_1_i(y)
             y = F.gelu(y)
-            y = self.convs_1x1[i](y)
-            y = self.norms_2[i](y)
+            y = conv_1x1_i(y)
+            y = norm_2_i(y)
             y = F.gelu(y)
             y = self.dropout(y)
             x = x + y
