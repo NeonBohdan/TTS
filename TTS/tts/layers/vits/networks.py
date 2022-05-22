@@ -135,7 +135,7 @@ class ResidualCouplingBlock(nn.Module):
         self.post.weight.data.zero_()
         self.post.bias.data.zero_()
 
-    def forward(self, x, x_mask, g=None, reverse=False):
+    def forward(self, x, x_mask, g=None, reverse: bool=False):
         """
         Note:
             Set `reverse` to True for inference.
@@ -155,7 +155,7 @@ class ResidualCouplingBlock(nn.Module):
             m = stats
             log_scale = torch.zeros_like(m)
 
-        if not reverse:
+        if not False: # reverse
             x1 = m + x1 * torch.exp(log_scale) * x_mask
             x = torch.cat([x0, x1], 1)
             logdet = torch.sum(log_scale, [1, 2])
@@ -211,7 +211,7 @@ class ResidualCouplingBlocks(nn.Module):
                 )
             )
 
-    def forward(self, x, x_mask, g=None, reverse=False):
+    def forward(self, x, x_mask, g=None, reverse: bool=False):
         """
         Note:
             Set `reverse` to True for inference.
