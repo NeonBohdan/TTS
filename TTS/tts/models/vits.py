@@ -2,7 +2,7 @@ import math
 import os
 from dataclasses import dataclass, field, replace
 from itertools import chain
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Tuple, Union, Optional
 
 import torch
 import torch.distributed as dist
@@ -737,7 +737,7 @@ class Vits(BaseTTS):
                 param.requires_grad = False
 
     @staticmethod
-    def _set_cond_input(aux_input: Dict):
+    def _set_cond_input(aux_input: Dict[str, Optional[torch.Tensor]]):
         """Set the speaker conditioning input based on the multi-speaker mode."""
         sid, g, lid = None, None, None
         if "speaker_ids" in aux_input and aux_input["speaker_ids"] is not None:
@@ -812,7 +812,7 @@ class Vits(BaseTTS):
         y_lengths: torch.Tensor,
         waveform: torch.Tensor,
         aux_input={"d_vectors": None, "speaker_ids": None, "language_ids": None},
-    ) -> Dict:
+    ) -> Dict[str,torch.Tensor]:
         """Forward pass of the model.
 
         Args:

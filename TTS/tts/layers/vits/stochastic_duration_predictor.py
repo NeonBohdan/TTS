@@ -1,4 +1,5 @@
 import math
+from typing import Optional
 
 import torch
 from torch import nn
@@ -43,7 +44,7 @@ class DilatedDepthSeparableConv(nn.Module):
             self.norms_2.append(LayerNorm2(channels))
         self.dropout = nn.Dropout(dropout_p)
 
-    def forward(self, x, x_mask, g=None):
+    def forward(self, x, x_mask, g: Optional[torch.Tensor]):
         """
         Shapes:
             - x: :math:`[B, C, T]`
@@ -118,7 +119,7 @@ class ConvFlow(nn.Module):
         self.proj.weight.data.zero_()
         self.proj.bias.data.zero_()
 
-    def forward(self, x, x_mask, g=None, reverse: bool=False):
+    def forward(self, x, x_mask, g: Optional[torch.Tensor], reverse: bool=False):
         x0, x1 = torch.split(x, [self.half_channels] * 2, 1)
         h = self.pre(x0)
         h = self.convs(h, x_mask, g=g)
@@ -235,7 +236,7 @@ class StochasticDurationPredictor(nn.Module):
         if lang_emb is not None:
             x = x + self.cond_lang(lang_emb)
 
-        x = self.convs(x, x_mask)
+        x = self.convs(x, x_mask, g=None)
         x = self.proj(x) * x_mask
 
         if not reverse:
@@ -244,7 +245,7 @@ class StochasticDurationPredictor(nn.Module):
 
             # condition encoder duration
             h = self.post_pre(dr)
-            h = self.post_convs(h, x_mask)
+            h = self.post_convs(h, x_mask, g=None)
             h = self.post_proj(h) * x_mask
             noise = torch.randn(dr.size(0), 2, dr.size(2)).to(device=x.device, dtype=x.dtype) * x_mask
             z_q = noise
