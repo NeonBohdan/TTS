@@ -739,20 +739,11 @@ class Vits(BaseTTS):
     @staticmethod
     def _set_cond_input(aux_input: Dict[str, Optional[torch.Tensor]]):
         """Set the speaker conditioning input based on the multi-speaker mode."""
-        sid, g, lid = None, None, None
+        g:Optional[torch.Tensor] = None
         if "speaker_ids" in aux_input and aux_input["speaker_ids"] is not None:
             sid = aux_input["speaker_ids"]
-            if sid.ndim == 0:
-                sid = sid.unsqueeze_(0)
-        if "d_vectors" in aux_input and aux_input["d_vectors"] is not None:
-            g = F.normalize(aux_input["d_vectors"]).unsqueeze(-1)
-            if g.ndim == 2:
-                g = g.unsqueeze_(0)
-
         if "language_ids" in aux_input and aux_input["language_ids"] is not None:
             lid = aux_input["language_ids"]
-            if lid.ndim == 0:
-                lid = lid.unsqueeze_(0)
 
         return sid, g, lid
 
@@ -811,7 +802,7 @@ class Vits(BaseTTS):
         y: torch.Tensor,
         y_lengths: torch.Tensor,
         waveform: torch.Tensor,
-        aux_input={"d_vectors": None, "speaker_ids": None, "language_ids": None},
+        aux_input: Dict[str,Optional[torch.Tensor]]={"d_vectors": None, "speaker_ids": None, "language_ids": None},
     ) -> Dict[str,torch.Tensor]:
         """Forward pass of the model.
 
@@ -853,8 +844,7 @@ class Vits(BaseTTS):
         outputs = {}
         sid, g, lid = self._set_cond_input(aux_input)
         # speaker embedding
-        if self.args.use_speaker_embedding and sid is not None:
-            g = self.emb_g(sid).unsqueeze(-1)  # [b, h, 1]
+        g = self.emb_g(sid).unsqueeze(-1)  # [b, h, 1]
 
         # language embedding
         lang_emb = None

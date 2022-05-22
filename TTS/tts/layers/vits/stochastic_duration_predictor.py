@@ -220,7 +220,7 @@ class StochasticDurationPredictor(nn.Module):
         if language_emb_dim != 0 and language_emb_dim is not None:
             self.cond_lang = nn.Conv1d(language_emb_dim, hidden_channels, 1)
 
-    def forward(self, x, x_mask, dr=None, g=None, lang_emb=None, reverse=False, noise_scale=1.0):
+    def forward(self, x, x_mask, dr=None, g=None, lang_emb=None, reverse:bool=False, noise_scale:float=1.0):
         """
         Shapes:
             - x: :math:`[B, C, T]`
