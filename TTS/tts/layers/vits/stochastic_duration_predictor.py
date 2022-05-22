@@ -1,5 +1,5 @@
 import math
-from typing import Optional
+from typing import Optional, Tuple
 
 import torch
 from torch import nn
@@ -77,7 +77,7 @@ class ElementwiseAffine(nn.Module):
         self.translation = nn.Parameter(torch.zeros(channels, 1))
         self.log_scale = nn.Parameter(torch.zeros(channels, 1))
 
-    def forward(self, x, x_mask, reverse: bool=False, g=None):  # pylint: disable=unused-argument
+    def forward(self, x, x_mask, reverse: bool=False, g=None)-> Tuple[torch.Tensor, torch.Tensor]:  # pylint: disable=unused-argument
         if not False:# reverse
             y = (x * torch.exp(self.log_scale) + self.translation) * x_mask
             logdet = torch.sum(self.log_scale * x_mask, [1, 2])
@@ -119,7 +119,7 @@ class ConvFlow(nn.Module):
         self.proj.weight.data.zero_()
         self.proj.bias.data.zero_()
 
-    def forward(self, x, x_mask, g: Optional[torch.Tensor], reverse: bool=False):
+    def forward(self, x, x_mask, g: Optional[torch.Tensor], reverse: bool=False)-> Tuple[torch.Tensor, torch.Tensor]:
         x0, x1 = torch.split(x, [self.half_channels] * 2, 1)
         h = self.pre(x0)
         h = self.convs(h, x_mask, g=g)
@@ -239,7 +239,7 @@ class StochasticDurationPredictor(nn.Module):
         x = self.convs(x, x_mask, g=None)
         x = self.proj(x) * x_mask
 
-        if not reverse:
+        if not False:
             flows = self.flows
             assert dr is not None
 
@@ -253,7 +253,7 @@ class StochasticDurationPredictor(nn.Module):
             # posterior encoder
             logdet_tot_q = 0.0
             for idx, flow in enumerate(self.post_flows):
-                z_q, logdet_q = flow(z_q, x_mask, g=(x + h))
+                z_q, logdet_q = flow(z_q, x_mask, g=(x + h),reverse=False)
                 logdet_tot_q = logdet_tot_q + logdet_q
                 if idx > 0:
                     z_q = torch.flip(z_q, [1])
@@ -274,7 +274,7 @@ class StochasticDurationPredictor(nn.Module):
 
             # flow layers
             for idx, flow in enumerate(flows):
-                z, logdet = flow(z, x_mask, g=x, reverse=reverse)
+                z, logdet = flow(z, x_mask, g=x, reverse=False)
                 logdet_tot = logdet_tot + logdet
                 if idx > 0:
                     z = torch.flip(z, [1])
