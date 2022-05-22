@@ -173,7 +173,7 @@ class CouplingBlock(nn.Module):
         dilation_rate,
         num_layers,
         c_in_channels=0,
-        dropout_p=0,
+        dropout_p=0.0,
         sigmoid_scale=False,
     ):
         super().__init__()

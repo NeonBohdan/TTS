@@ -41,7 +41,7 @@ class WN(torch.nn.Module):
         dilation_rate,
         num_layers,
         c_in_channels=0,
-        dropout_p=0,
+        dropout_p=0.0,
         weight_norm=True,
     ):
         super().__init__()
@@ -145,7 +145,7 @@ class WNBlocks(nn.Module):
         num_blocks,
         num_layers,
         c_in_channels=0,
-        dropout_p=0,
+        dropout_p=0.0,
         weight_norm=True,
     ):
 

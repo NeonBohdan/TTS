@@ -108,7 +108,7 @@ class ResidualCouplingBlock(nn.Module):
         kernel_size,
         dilation_rate,
         num_layers,
-        dropout_p=0,
+        dropout_p=0.0,
         cond_channels=0,
         mean_only=False,
     ):
