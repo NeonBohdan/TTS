@@ -118,7 +118,7 @@ class ConvFlow(nn.Module):
         self.proj.weight.data.zero_()
         self.proj.bias.data.zero_()
 
-    def forward(self, x, x_mask, g=None, reverse=False):
+    def forward(self, x, x_mask, g=None, reverse: bool=False):
         x0, x1 = torch.split(x, [self.half_channels] * 2, 1)
         h = self.pre(x0)
         h = self.convs(h, x_mask, g=g)
@@ -137,7 +137,6 @@ class ConvFlow(nn.Module):
             unnormalized_heights,
             unnormalized_derivatives,
             inverse=reverse,
-            tails="linear",
             tail_bound=self.tail_bound,
         )
 

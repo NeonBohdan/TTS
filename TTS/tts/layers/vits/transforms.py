@@ -13,12 +13,12 @@ def piecewise_rational_quadratic_transform(
     unnormalized_widths,
     unnormalized_heights,
     unnormalized_derivatives,
-    inverse=False,
+    inverse: bool=False,
     tails=None,
-    tail_bound=1.0,
-    min_bin_width=DEFAULT_MIN_BIN_WIDTH,
-    min_bin_height=DEFAULT_MIN_BIN_HEIGHT,
-    min_derivative=DEFAULT_MIN_DERIVATIVE,
+    tail_bound: float=1.0,
+    min_bin_width: float=DEFAULT_MIN_BIN_WIDTH,
+    min_bin_height: float=DEFAULT_MIN_BIN_HEIGHT,
+    min_derivative: float=DEFAULT_MIN_DERIVATIVE,
 ):
 
     outputs, logabsdet = unconstrained_rational_quadratic_spline(
@@ -35,7 +35,7 @@ def piecewise_rational_quadratic_transform(
     return outputs, logabsdet
 
 
-def searchsorted(bin_locations, inputs, eps=1e-6):
+def searchsorted(bin_locations, inputs, eps: float=1e-6):
     bin_locations[..., -1] += eps
     return torch.sum(inputs[..., None] >= bin_locations, dim=-1) - 1
 
@@ -45,11 +45,11 @@ def unconstrained_rational_quadratic_spline(
     unnormalized_widths,
     unnormalized_heights,
     unnormalized_derivatives,
-    inverse=False,
-    tail_bound=1.0,
-    min_bin_width=DEFAULT_MIN_BIN_WIDTH,
-    min_bin_height=DEFAULT_MIN_BIN_HEIGHT,
-    min_derivative=DEFAULT_MIN_DERIVATIVE,
+    inverse: bool=False,
+    tail_bound: float=1.0,
+    min_bin_width: float=DEFAULT_MIN_BIN_WIDTH,
+    min_bin_height: float=DEFAULT_MIN_BIN_HEIGHT,
+    min_derivative: float=DEFAULT_MIN_DERIVATIVE,
 ):
     inside_interval_mask = (inputs >= -tail_bound) & (inputs <= tail_bound)
     outside_interval_mask = ~inside_interval_mask
@@ -88,14 +88,14 @@ def rational_quadratic_spline(
     unnormalized_widths,
     unnormalized_heights,
     unnormalized_derivatives,
-    inverse=False,
-    left=0.0,
-    right=1.0,
-    bottom=0.0,
-    top=1.0,
-    min_bin_width=DEFAULT_MIN_BIN_WIDTH,
-    min_bin_height=DEFAULT_MIN_BIN_HEIGHT,
-    min_derivative=DEFAULT_MIN_DERIVATIVE,
+    inverse: bool=False,
+    left: float=0.0,
+    right: float=1.0,
+    bottom: float=0.0,
+    top: float=1.0,
+    min_bin_width: float=DEFAULT_MIN_BIN_WIDTH,
+    min_bin_height: float=DEFAULT_MIN_BIN_HEIGHT,
+    min_derivative: float=DEFAULT_MIN_DERIVATIVE,
 ):
     if torch.min(inputs) < left or torch.max(inputs) > right:
         raise ValueError("Input to a transform is not within its domain")
