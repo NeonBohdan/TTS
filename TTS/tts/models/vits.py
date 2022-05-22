@@ -806,11 +806,11 @@ class Vits(BaseTTS):
 
     def forward(  # pylint: disable=dangerous-default-value
         self,
-        x: torch.tensor,
-        x_lengths: torch.tensor,
-        y: torch.tensor,
-        y_lengths: torch.tensor,
-        waveform: torch.tensor,
+        x: torch.Tensor,
+        x_lengths: torch.Tensor,
+        y: torch.Tensor,
+        y_lengths: torch.Tensor,
+        waveform: torch.Tensor,
         aux_input={"d_vectors": None, "speaker_ids": None, "language_ids": None},
     ) -> Dict:
         """Forward pass of the model.
