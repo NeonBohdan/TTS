@@ -26,7 +26,7 @@ def piecewise_rational_quadratic_transform(
         unnormalized_widths=unnormalized_widths,
         unnormalized_heights=unnormalized_heights,
         unnormalized_derivatives=unnormalized_derivatives,
-        inverse=inverse,
+        inverse=False, #inverse
         min_bin_width=min_bin_width,
         min_bin_height=min_bin_height,
         min_derivative=min_derivative,
@@ -70,7 +70,7 @@ def unconstrained_rational_quadratic_spline(
         unnormalized_widths=unnormalized_widths[inside_interval_mask, :],
         unnormalized_heights=unnormalized_heights[inside_interval_mask, :],
         unnormalized_derivatives=unnormalized_derivatives[inside_interval_mask, :],
-        inverse=inverse,
+        inverse=False,#inverse
         left=-tail_bound,
         right=tail_bound,
         bottom=-tail_bound,
@@ -127,7 +127,7 @@ def rational_quadratic_spline(
     cumheights[..., -1] = top
     heights = cumheights[..., 1:] - cumheights[..., :-1]
 
-    if inverse:
+    if False:#inverse
         bin_idx = searchsorted(cumheights, inputs)[..., None]
     else:
         bin_idx = searchsorted(cumwidths, inputs)[..., None]
@@ -144,7 +144,7 @@ def rational_quadratic_spline(
 
     input_heights = heights.gather(-1, bin_idx)[..., 0]
 
-    if inverse:
+    if False:#inverse
         a = (inputs - input_cumheights) * (
             input_derivatives + input_derivatives_plus_one - 2 * input_delta
         ) + input_heights * (input_delta - input_derivatives)

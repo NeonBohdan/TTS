@@ -137,13 +137,13 @@ class ConvFlow(nn.Module):
             unnormalized_widths,
             unnormalized_heights,
             unnormalized_derivatives,
-            inverse=reverse,
+            inverse=False, #reverse
             tail_bound=self.tail_bound,
         )
 
         x = torch.cat([x0, x1], 1) * x_mask
         logdet = torch.sum(logabsdet * x_mask, [1, 2])
-        if not reverse:
+        if not False: #reverse
             return x, logdet
         return x
 
