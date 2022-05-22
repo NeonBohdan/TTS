@@ -226,9 +226,14 @@ class ResidualCouplingBlocks(nn.Module):
                 x, _ = flow(x, x_mask, g=g, reverse=reverse)
                 x = torch.flip(x, [1])
         else:
-            for flow in reversed(self.flows):
-                x = torch.flip(x, [1])
-                x = flow(x, x_mask, g=g, reverse=reverse)
+            x = torch.flip(x, [1])
+            x, _ = self.flows[3](x, x_mask, g=g, reverse=reverse)
+            x = torch.flip(x, [1])
+            x, _ = self.flows[2](x, x_mask, g=g, reverse=reverse)
+            x = torch.flip(x, [1])
+            x, _ = self.flows[1](x, x_mask, g=g, reverse=reverse)
+            x = torch.flip(x, [1])
+            x, _ = self.flows[0](x, x_mask, g=g, reverse=reverse)
         return x
 
 
