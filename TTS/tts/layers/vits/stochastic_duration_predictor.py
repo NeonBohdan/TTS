@@ -76,8 +76,8 @@ class ElementwiseAffine(nn.Module):
         self.translation = nn.Parameter(torch.zeros(channels, 1))
         self.log_scale = nn.Parameter(torch.zeros(channels, 1))
 
-    def forward(self, x, x_mask, reverse=False, g=None):  # pylint: disable=unused-argument
-        if not reverse:
+    def forward(self, x, x_mask, reverse: bool=False, g=None):  # pylint: disable=unused-argument
+        if not False:# reverse
             y = (x * torch.exp(self.log_scale) + self.translation) * x_mask
             logdet = torch.sum(self.log_scale * x_mask, [1, 2])
             return y, logdet
