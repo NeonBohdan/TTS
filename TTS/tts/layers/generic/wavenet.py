@@ -87,7 +87,7 @@ class WN(torch.nn.Module):
 
     def forward(self, x, x_mask=None, g=None):  # pylint: disable=unused-argument
         output = torch.zeros_like(x)
-        n_channels_tensor = torch.IntTensor([self.hidden_channels])
+        n_channels_tensor = torch.tensor([self.hidden_channels], dtype=torch.int32)
         x_mask = 1.0 if x_mask is None else x_mask
         if g is not None:
             g = self.cond_layer(g)
