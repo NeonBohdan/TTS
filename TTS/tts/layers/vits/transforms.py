@@ -38,7 +38,8 @@ def piecewise_rational_quadratic_transform(
         min_bin_width=min_bin_width,
         min_bin_height=min_bin_height,
         min_derivative=min_derivative,
-        **spline_kwargs,
+        tails=tails,
+        tail_bound=tail_bound,
     )
     return outputs, logabsdet
 
