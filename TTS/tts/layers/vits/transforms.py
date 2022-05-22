@@ -22,14 +22,7 @@ def piecewise_rational_quadratic_transform(
     min_derivative=DEFAULT_MIN_DERIVATIVE,
 ):
 
-    if tails is None:
-        spline_fn = rational_quadratic_spline
-        spline_kwargs = {}
-    else:
-        spline_fn = unconstrained_rational_quadratic_spline
-        spline_kwargs = {"tails": tails, "tail_bound": tail_bound}
-
-    outputs, logabsdet = spline_fn(
+    outputs, logabsdet = unconstrained_rational_quadratic_spline(
         inputs=inputs,
         unnormalized_widths=unnormalized_widths,
         unnormalized_heights=unnormalized_heights,
